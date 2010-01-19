@@ -12,13 +12,13 @@
 			("Bar Lights" "a3")))
 (defun x10-table (stream)
   (cl-who:with-html-output (stream)
-    (:table :border 1
+    (:table :border 1 :padding 3 :spacing 5 :width "100%"
      (:tbody
       (iterate (for (name code) in *x10-devices*)
 	       (collect
 		   (cl-who:htm (:tr (:td (cl-who:str name))
-				    (:td (x10-device-link code T stream))
-				    (:td (x10-device-link code nil stream))))))))))
+				    (:td :align "center" (x10-device-link code T stream))
+				    (:td :align "center" (x10-device-link code nil stream))))))))))
 
 (defun x10-device-link (code on-p s)
   (cl-who:with-html-output (s)
@@ -43,7 +43,7 @@
   (x10-command code dir)
   (hunchentoot:start-session)
   (setf (hunchentoot:session-value 'x10-switch) (list code dir))
-  (hunchentoot:redirect "/x10"))
+  (hunchentoot:redirect "/x10?"))
 
 (defun x10-command (code dir)
   (assert (member dir (list "fon" "foff") :test #'string=)
