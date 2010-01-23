@@ -2,7 +2,8 @@
 
 (defun start-server ()
   (hunchentoot:start (make-instance 'hunchentoot:acceptor :port 8080))
-  )
+  (make-processor))
+
 (defun entry-points ()
   (push 
    (hunchentoot:create-folder-dispatcher-and-handler "/" "/home/ryan/clbuild/source/holly/www/")
@@ -23,9 +24,7 @@
 (defun x10-device-link (code on-p s)
   (cl-who:with-html-output (s)
     (:a :href (x10-device-href code on-p)
-	(cl-who:str (if on-p "ON" "OFF")))
-    )
-  )
+	(cl-who:str (if on-p "ON" "OFF")))))
 
 (hunchentoot:define-easy-handler (x10 :uri "/x10") ()
   (hunchentoot:start-session)
@@ -43,7 +42,13 @@
 (hunchentoot:define-easy-handler (x10-switch :uri "/x10-switch") (code dir)
   (x10-command code dir)
   (setf (hunchentoot:session-value 'x10-switch) (list code dir))
-  (hunchentoot:redirect "/x10?"))
+  (cl-who:with-html-output-to-string (s)
+    (:html
+     (:head
+      (:meta :http-equiv "refresh" :content "3;url=/x10"))
+     (:body
+      (:div
+       (cl-who:fmt "Sent ~a ~a" dir code))))))
 
 
 (defvar *x10-processor* nil "thread for serializing x10 req.")
