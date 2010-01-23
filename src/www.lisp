@@ -3,7 +3,7 @@
 (defun start-server ()
   (hunchentoot:start (make-instance 'hunchentoot:acceptor :port 8080))
   (make-processor)
-  (start-stream-sender 'all *standard-output*
+  (start-stream-sender 'all "/tmp/holly.log"
 		       :category-spec '(dribble+ x10)
 		       :output-spec '(time category
 				      context message)))
