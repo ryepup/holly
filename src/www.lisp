@@ -41,13 +41,27 @@
 
 (hunchentoot:define-easy-handler (x10-switch :uri "/x10-switch") (code dir)
   (x10-command code dir)
-  (hunchentoot:start-session)
   (setf (hunchentoot:session-value 'x10-switch) (list code dir))
   (hunchentoot:redirect "/x10?"))
+
+
+(defvar *x10-processor* nil "thread for serializing x10 req.")
+(defvar *x10-channel* (make-instance 'chanl:bounded-channel :size 5)
+  "channel to convey x10 commands, max queue length 5")
+
+(defun make-processor ()
+  (setf *x10-processor*
+	(chanl:pexec (:name "X10 Processor")
+	  (iterate (for x = (chanl:recv *x10-channel*))
+		   (until (eql x :shutdown))
+		   (for cmd = (format nil "heyu ~a ~a" (car x) (cadr x)))
+		   ;;run it twice because sometimes once isn't enough
+		   (trivial-shell:shell-command cmd)
+		   (trivial-shell:shell-command cmd)))))
 
 (defun x10-command (code dir)
   (assert (member dir (list "fon" "foff") :test #'string=)
 	  () "~a must be fon or foff" dir)
   (assert (member code *x10-devices* :key #'cadr :test #'string=)
 	  () "~a must be in the list of devices: ~a" code *x10-devices*)
-  (trivial-shell:shell-command (format nil "heyu ~a ~a" dir code)))
+  (chanl:send *x10-channel* (list code dir)))
