@@ -1,2 +1,2 @@
 (defpackage #:holly
-    (:use #:cl #:iterate))
+    (:use #:cl #:iterate #:log5))
