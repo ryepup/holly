@@ -28,6 +28,7 @@
   )
 
 (hunchentoot:define-easy-handler (x10 :uri "/x10") ()
+  (hunchentoot:start-session)
   (cl-who:with-html-output-to-string (s)
     (:html
      (:body
