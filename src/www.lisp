@@ -12,17 +12,27 @@
    (hunchentoot:create-folder-dispatcher-and-handler "/" "/home/ryan/clbuild/source/holly/www/")
    hunchentoot:*dispatch-table*))
 
-(defvar *x10-devices* '(("TV Lamp" "a1")
-			("Bar Lights" "a3")))
+(defstruct x10-device
+  (name "" :type string :read-only T )
+  (code "" :type string :read-only T )
+  (state 0 :type bit))
+
+(defvar *x10-devices* (list (make-x10-device :name "TV Lamp" :code "a1")
+			    (make-x10-device :name "Bar Lights" :code "a3")))
+
+
 (defun x10-table (stream)
   (cl-who:with-html-output (stream)
     (:table :border 1 :padding 3 :spacing 5 :width "100%"
      (:tbody
-      (iterate (for (name code) in *x10-devices*)
+      (iterate (for device in *x10-devices*)
+	       (for name = (x10-device-name device))
+	       (for code = (x10-device-code device))
 	       (collect
-		   (cl-who:htm (:tr (:td (cl-who:str name))
-				    (:td :align "center" (x10-device-link code T stream))
-				    (:td :align "center" (x10-device-link code nil stream))))))))))
+		   (cl-who:htm (:tr :class (format nil "state~a" (x10-device-state device))
+				(:td (cl-who:str name))
+				(:td :align "center" (x10-device-link code T stream))
+				(:td :align "center" (x10-device-link code nil stream))))))))))
 
 (defun x10-device-link (code on-p s)
   (cl-who:with-html-output (s)
@@ -48,7 +58,7 @@
   (cl-who:with-html-output-to-string (s)
     (:html
      (:head
-      (:meta :http-equiv "refresh" :content "3;url=/x10"))
+      (:meta :http-equiv "refresh" :content "2;url=/x10"))
      (:body
       (:div
        (cl-who:fmt "Sent ~a ~a" dir code))))))
@@ -64,7 +74,7 @@
   (destructuring-bind (code dir) channel-msg
     (assert (member dir (list "fon" "foff") :test #'string=)
 	    () "~a must be fon or foff" dir)
-    (assert (member code *x10-devices* :key #'cadr :test #'string=)
+    (assert (member code *x10-devices* :key #'x10-device-code :test #'string=)
 	    () "~a must be in the list of devices: ~a" code *x10-devices*)
     (let ((cmd (format nil "heyu ~a ~a" dir code)))
       (log-for x10 cmd)
@@ -73,7 +83,10 @@
 	       (multiple-value-list (trivial-shell:shell-command cmd)))
       (log-for x10
 	       "~{ ~a ~}"
-	       (multiple-value-list (trivial-shell:shell-command cmd))))))
+	       (multiple-value-list (trivial-shell:shell-command cmd)))
+      (setf (x10-device-state (find code *x10-devices* :key #'x10-device-code
+				    :test #'string=))
+	    (if (string= dir "fon") 1 0)))))
 
 (defun make-processor ()
   (setf *x10-processor*
