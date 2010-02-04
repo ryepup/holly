@@ -1,5 +1,5 @@
 (asdf:defsystem #:holly
-  :depends-on (#:iterate #:hunchentoot #:cl-who #:trivial-shell #:chanl #:log5)
+  :depends-on (#:iterate #:hunchentoot #:trivial-shell #:chanl #:log5 #:yaclml)
   :components ((:module "src"
 		:serial t
 		:components ((:file "packages")

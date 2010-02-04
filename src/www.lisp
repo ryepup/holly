@@ -20,49 +20,41 @@
 (defvar *x10-devices* (list (make-x10-device :name "TV Lamp" :code "a1")
 			    (make-x10-device :name "Bar Lights" :code "a3")))
 
-
-(defun x10-table (stream)
-  (cl-who:with-html-output (stream)
-    (:table :border 1 :padding 3 :spacing 5 :width "100%"
-     (:tbody
-      (iterate (for device in *x10-devices*)
-	       (for name = (x10-device-name device))
-	       (for code = (x10-device-code device))
-	       (collect
-		   (cl-who:htm (:tr :class (format nil "state~a" (x10-device-state device))
-				(:td (cl-who:str name))
-				(:td :align "center" (x10-device-link code T stream))
-				(:td :align "center" (x10-device-link code nil stream))))))))))
-
-(defun x10-device-link (code on-p s)
-  (cl-who:with-html-output (s)
-    (:a :href (x10-device-href code on-p)
-	(cl-who:str (if on-p "ON" "OFF")))))
+(defvar *tal-generator* (make-instance 'file-system-generator
+				       :root-directories (list *default-pathname-defaults*
+							       (merge-pathnames "source/holly/templates/"))))
 
 (hunchentoot:define-easy-handler (x10 :uri "/x10") ()
   (hunchentoot:start-session)
-  (cl-who:with-html-output-to-string (s)
-    (:html
-     (:body
-      (:div (cl-who:str "Controls x10 devices"))
-      (x10-table s)
-      (alexandria:when-let ((code-dir (hunchentoot:session-value 'x10-switch)))
-	(cl-who:htm (:div (cl-who:fmt "Set ~a to ~a" (car code-dir) (cadr code-dir)))))))))
+  (with-output-to-string (*yaclml-stream*)
+    (funcall
+     (load-tal *tal-generator* "x10.tal")
+     (tal-env 'devices
+	      (iter (for dev in *x10-devices*)
+		    (collect
+			(tal-env
+			 'name (x10-device-name dev)
+			 'class (format nil "state~a" (x10-device-state dev))
+			 'on-url (x10-device-href (x10-device-code dev)
+						  T)
+			 'off-url (x10-device-href (x10-device-code dev)
+						   nil))))
+	      'status (alexandria:when-let ((code-dir (hunchentoot:session-value 'x10-switch)))
+			(format nil "Set ~a to ~a" (car code-dir) (cadr code-dir))))
+     *tal-generator*)))
 
 (defun x10-device-href (code on-p)
   (format nil "/x10-switch?code=~a&dir=~a" code (if on-p "fon" "foff")))
 
-(hunchentoot:define-easy-handler (x10-switch :uri "/x10-switch") (code dir)
+(hunchentoot:define-easy-handler (x10-switch :uri "/x10-switch")
+    (code dir)
   (chanl:send *x10-channel* (list code dir))
   (setf (hunchentoot:session-value 'x10-switch) (list code dir))
-  (cl-who:with-html-output-to-string (s)
-    (:html
-     (:head
-      (:meta :http-equiv "refresh" :content "2;url=/x10"))
-     (:body
-      (:div
-       (cl-who:fmt "Sent ~a ~a" dir code))))))
-
+  (with-output-to-string (*yaclml-stream*)
+    (funcall
+     (load-tal *tal-generator* "x10-switch.tal")
+     (tal-env )
+     *tal-generator*)))
 
 (defvar *x10-processor* nil "thread for serializing x10 req.")
 (defvar *x10-channel* (make-instance 'chanl:bounded-channel :size 5)
