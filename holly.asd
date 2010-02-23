@@ -3,4 +3,5 @@
   :components ((:module "src"
 		:serial t
 		:components ((:file "packages")
+			     (:file "x10")
 			     (:file "www")))))

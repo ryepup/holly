@@ -1,11 +1,12 @@
 <html lang="en"
-      xmlns:tal="http://common-lisp.net/project/bese/tal/core">
+      xmlns:tal="http://common-lisp.net/project/bese/tal/core"
+      tal:in-package=":holly">
   <head>
     <title>Home Automation Madness</title>
-    <link href="style.css" rel="stylesheet" type="text/css"></link>
+    <link href="s/style.css" rel="stylesheet" type="text/css"></link>
   </head>
-  <body>
-    <div>Controls x10 devices</div>
+  <body class="x10">
+    <h1>Control x10 devices</h1>
     <table>
       <tbody>
 	<tr tal:dolist="$devices">

@@ -1,5 +1,6 @@
 <html lang="en"
-      xmlns:tal="http://common-lisp.net/project/bese/tal/core">
+      xmlns:tal="http://common-lisp.net/project/bese/tal/core"
+      tal:in-package=":holly">
   <head>
     <title>Home Automation Madness</title>
     <link href="style.css" rel="stylesheet" type="text/css"></link>

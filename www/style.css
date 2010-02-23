@@ -1,0 +1,30 @@
+/* Reset all white-space to 0 for consistency across browsers */
+* { margin:0px; padding:0px; }
+
+/* Default to some sans-serif font at a specific size */
+body { font-family: Verdana, Arial, sans-serif; font-size:12px;  }
+
+/* Get some padding between paragraphs and some line spacing */
+p { padding-bottom:5px; line-height:1.4em; }
+
+/* Put some padding back onto our list elements */
+ul, ol { margin-left: 10px; }
+li  { margin-left:10px; padding-left:10px; }
+
+/* Bye bye ugly blue border */
+a img { border:0px; }
+
+/* No dots around clicked links */
+a, a:active { outline: none; } 
+
+/* Class to any floated elements */
+.clear { clear:both; }
+
+body.x10 table tr td{
+    padding:5px;
+    border-bottom:2px solid black;
+}
+
+body.x10 table {
+    border-collapse:collapse;
+}

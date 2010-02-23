@@ -1,2 +1,2 @@
 (defpackage #:holly
-    (:use #:cl #:iterate #:log5 #:yaclml))
+    (:use #:cl #:iterate #:log5 #:yaclml #:alexandria))
