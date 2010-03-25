@@ -12,7 +12,7 @@
 (defvar *x10-processor* nil "thread for serializing x10 req.")
 (defvar *x10-channel* (make-instance 'chanl:bounded-channel :size 5)
   "channel to convey x10 commands, max queue length 5")
-
+(defvar *x10-timers* nil "list of active timers"))
 (defcategory x10)
 
 (defun process-x10 (channel-msg)
@@ -39,3 +39,21 @@
 	  (iterate (for x = (chanl:recv *x10-channel*))
 		   (until (eql x :shutdown))
 		   (process-x10 x)))))
+
+(defgeneric change-x10-device (device direction))
+(defmethod change-x10-device (device (direction T))
+  (change-x10-device device (if direction "fon" "foff")))
+(defmethod change-x10-device ((dev x10-device) direction)
+  (change-x10-device (x10-device-code dev) direction))
+(defmethod change-x10-device ((code string) (direction string))
+  (chanl:send *x10-channel* (list code direction)))
+
+(defun make-x10-timer (dev on-p)
+  (let ((timer
+	 (timer:make-timer #'(lambda ()
+			       (change-x10-device dev on-p))
+			   :name (format nil "Turn ~a ~a"
+					 (x10-device-name dev)
+					 (if on-p "on" "off")))))
+    (push timer *x10-timers*)
+    timer))

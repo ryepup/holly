@@ -45,7 +45,6 @@
 
 (hunchentoot:define-easy-handler (x10-switch :uri "/x10-switch")
     (code dir)
-  (chanl:send *x10-channel* (list code dir))
+  (change-x10-device code dir)
   (setf (hunchentoot:session-value 'x10-switch) (list code dir))
   (render-tal "x10-switch.tal"))
-
