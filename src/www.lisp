@@ -1,14 +1,5 @@
 (in-package :holly)
 
-(defun start-server ()
-  (hunchentoot:start (make-instance 'hunchentoot:acceptor :port 8081))
-  (make-processor)
-  (start-stream-sender 'all "/tmp/holly.log"
-		       :category-spec '(dribble+ x10)
-		       :output-spec '(time category
-				      context message))
-  (entry-points))
-
 (defun entry-points ()
   (push
    (hunchentoot:create-folder-dispatcher-and-handler "/s/" #P"/home/ryan/clbuild/source/holly/www/")

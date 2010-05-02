@@ -1,4 +1,5 @@
 (in-package #:holly)
+(defcategory x10)
 
 (defstruct x10-device
   (name "" :type string :read-only T )
@@ -7,13 +8,15 @@
 
 (defvar *x10-devices* (list (make-x10-device :name "TV Lamp" :code "a1")
 			    (make-x10-device :name "Bar Lights" :code "a3")
-			    (make-x10-device :name "Chandelier" :code "a5")))
+			    (make-x10-device :name "Chandelier" :code "a5")
+			    (make-x10-device :name "Fish Tank" :code "p13")
+			    (make-x10-device :name "Bedroom Lamp" :code "p1")))
 
 (defvar *x10-processor* nil "thread for serializing x10 req.")
 (defvar *x10-channel* (make-instance 'chanl:bounded-channel :size 5)
   "channel to convey x10 commands, max queue length 5")
-(defvar *x10-timers* nil "list of active timers"))
-(defcategory x10)
+(defvar *x10-timers* nil "list of active timers")
+
 
 (defun process-x10 (channel-msg)
   (destructuring-bind (code dir) channel-msg

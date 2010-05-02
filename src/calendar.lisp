@@ -29,11 +29,19 @@
 	(collect (list (make-x10-timer dev T) start))
 	(collect (list (make-x10-timer dev nil) end))))))
 
-(defun get-calendar-entries (&optional (calendar-url *google-calendar-url*))
+(defun calendar-url (&optional (base-url *google-calendar-url*))
+  (format nil "~astart-min=~a&start-max=~a"
+	  base-url
+	  (local-time:to-rfc3339-timestring (local-time:now))
+	  (local-time:to-rfc3339-timestring
+	   (local-time:timestamp+ (local-time:now)
+								      1 :month))))
+
+(defun get-calendar-entries ()
   "creates calendar-entry objects based on the xml returned by the calendar url"
   (iterate
     (with xml = (cxml:make-source
-		 (drakma:http-request calendar-url)))
+		 (drakma:http-request (calendar-url))))
     (while (klacks:find-element xml "entry"))
     (for title = (progn
 		   (klacks:find-element xml "title")
