@@ -18,9 +18,11 @@
     </table>
     <p tal:content="$status">Parameter will go here.</p>
     <hr/>
-    <a href="${$reschedule-url}">Pull timers from google</a>
-    <ol>
-      <li tal:dolist="$timers" tal:content="$name"></li>
-    </ol>
+    <p>
+      <a href="${$reschedule-url}">Pull timers from google</a>
+      <ol>
+	<li tal:dolist="$timers" tal:content="$name"></li>
+      </ol>
+    </p>
   </body>
 </html>

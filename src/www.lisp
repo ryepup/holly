@@ -10,11 +10,17 @@
 		       :root-directories (list #P"/home/ryan/clbuild/source/holly/templates/")))
 
 (defun render-tal (tal-file &optional tal-env)
-  (with-yaclml-output-to-string
+  (concatenate 'string
+	       "<!DOCTYPE html>
+"
+	         (with-yaclml-output-to-string
     (funcall
      (load-tal *tal-generator* tal-file)
      tal-env
-     *tal-generator*)))
+     *tal-generator*))
+
+	       )
+)
 
 (hunchentoot:define-easy-handler (x10 :uri "/x10") ()
   (hunchentoot:start-session)

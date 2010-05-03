@@ -2,7 +2,7 @@
 * { margin:0px; padding:0px; }
 
 /* Default to some sans-serif font at a specific size */
-body { font-family: Verdana, Arial, sans-serif; font-size:12px;  }
+body { font-family: Verdana, Arial, sans-serif; font-size:1.2em; padding-left:10px; }
 
 /* Get some padding between paragraphs and some line spacing */
 p { padding-bottom:5px; line-height:1.4em; }
@@ -27,4 +27,5 @@ body.x10 table tr td{
 
 body.x10 table {
     border-collapse:collapse;
+    min-width:400px;
 }
