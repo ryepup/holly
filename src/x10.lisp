@@ -51,12 +51,13 @@
 (defmethod change-x10-device ((code string) (direction string))
   (chanl:send *x10-channel* (list code direction)))
 
-(defun make-x10-timer (dev on-p)
+(defun make-x10-timer (dev on-p timestamp)
   (let ((timer
 	 (timer:make-timer #'(lambda ()
 			       (change-x10-device dev on-p))
-			   :name (format nil "Turn ~a ~a"
+			   :name (format nil "Turn ~a ~a at ~a"
 					 (x10-device-name dev)
-					 (if on-p "on" "off")))))
+					 (if on-p "on" "off")
+					 (local-time:to-rfc1123-timestring timestamp)))))
     (push timer *x10-timers*)
     timer))

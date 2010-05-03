@@ -1,0 +1,12 @@
+<html lang="en"
+      xmlns:tal="http://common-lisp.net/project/bese/tal/core"
+      tal:in-package=":holly">
+  <head>
+    <title>Home Automation Madness</title>
+    <link href="style.css" rel="stylesheet" type="text/css"></link>
+    <meta http-equiv="refresh" content="2;url=/x10"/>
+  </head>
+  <body>
+    <div>Timers rescheduled</div>
+  </body>
+</html>

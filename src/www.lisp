@@ -29,7 +29,11 @@
 		     'on-url (x10-device-href (x10-device-code dev) T)
 		     'off-url (x10-device-href (x10-device-code dev) nil))))
      'status (when-let ((code-dir (hunchentoot:session-value 'x10-switch)))
-	       (format nil "Set ~a to ~a" (car code-dir) (cadr code-dir))))))
+	       (format nil "Set ~a to ~a" (car code-dir) (cadr code-dir)))
+     'reschedule-url "/x10-reschedule"
+     'timers (iter (for tm in *x10-timers*)
+		   (collect (tal-env 'name
+				     (timer:timer-name tm)))))))
 
 (defun x10-device-href (code on-p)
   (format nil "/x10-switch?code=~a&dir=~a" code (if on-p "fon" "foff")))
@@ -39,3 +43,9 @@
   (change-x10-device code dir)
   (setf (hunchentoot:session-value 'x10-switch) (list code dir))
   (render-tal "x10-switch.tal"))
+
+(hunchentoot:define-easy-handler (x10-reschedule :uri "/x10-reschedule")
+    ()
+  (reschedule-timers)
+  (render-tal "x10-reschedule.tal"))
+

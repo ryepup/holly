@@ -26,8 +26,8 @@
     (when next-time
       ;;find the next on/off time for the device
       (destructuring-bind (start end) (first (times next-time))
-	(collect (list (make-x10-timer dev T) start))
-	(collect (list (make-x10-timer dev nil) end))))))
+	(collect (list (make-x10-timer dev T start) start))
+	(collect (list (make-x10-timer dev nil end) end))))))
 
 (defun calendar-url (&optional (base-url *google-calendar-url*))
   (format nil "~astart-min=~a&start-max=~a"
