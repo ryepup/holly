@@ -9,6 +9,7 @@
 (defvar *x10-devices* (list (make-x10-device :name "TV Lamp" :code "a1")
 			    (make-x10-device :name "Bar Lights" :code "a3")
 			    (make-x10-device :name "Chandelier" :code "a5")
+			    (make-x10-device :name "Porch" :code "a2")
 			    (make-x10-device :name "Fish Tank" :code "p13")
 			    (make-x10-device :name "Bedroom Lamp" :code "p1")))
 
