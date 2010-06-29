@@ -13,14 +13,11 @@
   (concatenate 'string
 	       "<!DOCTYPE html>
 "
-	         (with-yaclml-output-to-string
-    (funcall
-     (load-tal *tal-generator* tal-file)
-     tal-env
-     *tal-generator*))
-
-	       )
-)
+	       (with-yaclml-output-to-string
+		 (funcall
+		  (load-tal *tal-generator* tal-file)
+		  tal-env
+		  *tal-generator*))))
 
 (hunchentoot:define-easy-handler (x10 :uri "/x10") ()
   (hunchentoot:start-session)

@@ -1,12 +1,11 @@
-<html lang="en"
-      xmlns:tal="http://common-lisp.net/project/bese/tal/core"
-      tal:in-package=":holly">
-  <head>
-    <title>Home Automation Madness</title>
-    <link href="s/style.css" rel="stylesheet" type="text/css"></link>
-  </head>
-  <body class="x10">
-    <h1>Control x10 devices</h1>
+<tal:include
+   tal:in-package=":holly"
+   tal:name="main.tal"
+   xmlns:tal="http://common-lisp.net/project/bese/tal/core"
+   xmlns:param="http://common-lisp.net/project/bese/tal/params">
+  <param:subtitle>Control x10 devices</param:subtitle>
+  <param:title>Home automation madness</param:title>
+  <param:content>
     <table>
       <tbody>
 	<tr tal:dolist="$devices">
@@ -24,5 +23,5 @@
 	<li tal:dolist="$timers" tal:content="$name"></li>
       </ol>
     </p>
-  </body>
-</html>
+  </param:content>
+</tal:include>

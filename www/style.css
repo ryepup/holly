@@ -27,5 +27,5 @@ body.x10 table tr td{
 
 body.x10 table {
     border-collapse:collapse;
-    min-width:400px;
+    width:100%;
 }
