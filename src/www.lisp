@@ -2,16 +2,16 @@
 
 (defun entry-points ()
   (push
-   (hunchentoot:create-folder-dispatcher-and-handler "/s/" #P"/home/ryan/clbuild/source/holly/www/")
+   (hunchentoot:create-folder-dispatcher-and-handler "/s/" #P"/home/ryan/lisp/holly/www/")
    hunchentoot:*dispatch-table*))
 
 (defvar *tal-generator* (make-instance 'file-system-generator
 		       :cachep nil
-		       :root-directories (list #P"/home/ryan/clbuild/source/holly/templates/")))
+		       :root-directories (list #P"/home/ryan/lisp/holly/templates/")))
 
 (defun render-tal (tal-file &optional tal-env)
   (concatenate 'string
-	       "<!DOCTYPE html>
+	       "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
 "
 	       (with-yaclml-output-to-string
 		 (funcall
@@ -51,4 +51,8 @@
     ()
   (reschedule-timers)
   (render-tal "x10-reschedule.tal"))
+
+(hunchentoot:define-easy-handler (home :uri "/")
+    ()
+  (render-tal "home.tal"))
 

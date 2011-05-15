@@ -2,15 +2,11 @@
       tal:in-package=":holly">
   <head>
     <title tal:content="$title">TITLE</title>
-    <link href="s/style.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" type="text/css" 
-	  href="s/android.css" media="only screen and (max-width: 480px)" />
-    <meta name="viewport" content="user-scalable=no, width=device-width" />
-
-
+    <link href="s/jquery.lcars/src/jquery.lcars.bootstrap.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
   </head>
-  <body class="x10">
-    <h1 class="subtitle" tal:content="$subtitle">SUBTITLE</h1>
-    <div class="main-body" tal:content-as-is="$content"/>
+  <body class="lcars-tframe">
+    <tal:tal tal:content-as-is="$content"/>
   </body>
+  <script language="javascript" src="s/jquery.lcars/src/jquery.lcars.bootstrap.js"></script>
 </html>
