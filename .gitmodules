@@ -1,0 +1,3 @@
+[submodule "www/jquery.lcars"]
+	path = www/jquery.lcars
+	url = git@github.com:ryepup/jquery.lcars.git
