@@ -3,9 +3,18 @@
    tal:name="main.tal"
    xmlns:tal="http://common-lisp.net/project/bese/tal/core"
    xmlns:param="http://common-lisp.net/project/bese/tal/params">
-  <param:subtitle>Control x10 devices</param:subtitle>
-  <param:title>Home automation madness</param:title>
-  <param:content>
+  <param:subtitle>Environmental</param:subtitle>
+  <param:upper-content>
+    Lights are controlled manually or via a google calendar.
+    <p tal:content="$status">Parameter will go here.</p>  
+  </param:upper-content>
+  <param:lower-nav>
+    <li>
+      <a href="${$reschedule-url}">Pull timers from google</a>
+    </li>
+  </param:lower-nav>
+  
+  <param:lower-content>
     <table>
       <tbody>
 	<tr tal:dolist="$devices">
@@ -15,13 +24,11 @@
 	</tr>
       </tbody>
     </table>
-    <p tal:content="$status">Parameter will go here.</p>
     <hr/>
     <p>
-      <a href="${$reschedule-url}">Pull timers from google</a>
       <ol>
 	<li tal:dolist="$timers" tal:content="$name"></li>
       </ol>
     </p>
-  </param:content>
+  </param:lower-content>
 </tal:include>

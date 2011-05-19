@@ -6,7 +6,21 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
   </head>
   <body class="lcars-tframe">
-    <tal:tal tal:content-as-is="$content"/>
+    <div class="lcars-upper">
+      <ul class="lcars-nav">
+	<li>Holly</li>
+      </ul>
+      <h1 tal:content="$subtitle"/>
+      <tal:tal tal:content-as-is="$upper-content"/>
+    </div>
+    <div class="lcars-lower">
+      <ul class="lcars-nav">
+	<li>Options</li>
+	<li><a href="x10">Lights</a></li>
+	<tal:tal tal:when="$lower-nav" tal:content-as-is="$lower-nav"/>
+      </ul>
+      <tal:tal tal:content-as-is="$lower-content"/>
+    </div>
+    <script language="javascript" src="/assets/jquery.lcars/src/jquery.lcars.bootstrap.js"></script>
   </body>
-  <script language="javascript" src="/assets/jquery.lcars/src/jquery.lcars.bootstrap.js"></script>
 </html>

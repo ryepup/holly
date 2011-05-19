@@ -3,17 +3,10 @@
    tal:name="main.tal"
    xmlns:tal="http://common-lisp.net/project/bese/tal/core"
    xmlns:param="http://common-lisp.net/project/bese/tal/params">
-  <param:content>
-    <div class="lcars-upper">
-      <h1>Holly</h1>
-      Upper
-    </div>
-    <div class="lcars-lower">
-      <ul class="lcars-nav">
-	<li>Options</li>
-	<li><a href="x10">Lights</a></li>
-      </ul>
-      Lower
-    </div>    
-  </param:content>
+  <param:upper-content>
+    Home Summary
+  </param:upper-content>
+  <param:lower-content>
+    uuhh.. stuff?
+  </param:lower-content>
 </tal:include>
