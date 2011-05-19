@@ -1,13 +1,19 @@
 (in-package :holly)
 
+(defun resource-path (dirname)
+  (truename
+   (merge-pathnames dirname
+		    (asdf:system-source-directory
+		     (make-keyword (package-name *package*))))))
+
 (defun entry-points ()
-  (push
-   (hunchentoot:create-folder-dispatcher-and-handler "/s/" #P"/home/ryan/lisp/holly/www/")
-   hunchentoot:*dispatch-table*))
+  (push (hunchentoot:create-folder-dispatcher-and-handler
+	 "/assets/" (resource-path "www"))
+	hunchentoot:*dispatch-table*))
 
 (defvar *tal-generator* (make-instance 'file-system-generator
 		       :cachep nil
-		       :root-directories (list #P"/home/ryan/lisp/holly/templates/")))
+		       :root-directories (list (resource-path "templates"))))
 
 (defun render-tal (tal-file &optional tal-env)
   (concatenate 'string
@@ -36,7 +42,7 @@
      'reschedule-url "/x10-reschedule"
      'timers (iter (for tm in *x10-timers*)
 		   (collect (tal-env 'name
-				     (timer:timer-name tm)))))))
+				     (trivial-timers:timer-name tm)))))))
 
 (defun x10-device-href (code on-p)
   (format nil "/x10-switch?code=~a&dir=~a" code (if on-p "fon" "foff")))

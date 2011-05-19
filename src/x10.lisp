@@ -54,7 +54,7 @@
 
 (defun make-x10-timer (dev on-p timestamp)
   (let ((timer
-	 (timer:make-timer #'(lambda ()
+	 (trivial-timers:make-timer #'(lambda ()
 			       (change-x10-device dev on-p))
 			   :name (format nil "Turn ~a ~a at ~a"
 					 (x10-device-name dev)

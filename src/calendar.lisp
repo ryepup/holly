@@ -1,6 +1,6 @@
 (in-package #:holly)
 
-(defvar *google-calendar-url* (with-open-file (f "/home/ryan/.holly.calender-url")
+(defvar *google-calendar-url* (with-open-file (f "/home/ryan/.holly.calendar-url")
 				(read-line f))
   "the private URL from google calender, lets me bypass authorization")
 
@@ -78,9 +78,8 @@
 
 ;;now to trigger and schedule the x10 commands
 (defun reschedule-timers ()
-  (unless (timer:timers-enabled-p) (timer:enable-timers))
-  (mapcar #'timer:unschedule-timer *x10-timers*)
+  (mapcar #'trivial-timers:unschedule-timer *x10-timers*)
   (setf *x10-timers* nil)
   (iter (for (timer lt) in (make-device-timers))
-	(timer:schedule-timer timer
-			      (local-time:timestamp-to-universal lt))))
+	(trivial-timers:schedule-timer timer
+				       (local-time:timestamp-to-universal lt))))
