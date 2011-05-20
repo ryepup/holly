@@ -6,7 +6,6 @@
   <param:subtitle>Environmental</param:subtitle>
   <param:upper-content>
     Lights are controlled manually or via a google calendar.
-    <p tal:content="$status">Parameter will go here.</p>  
   </param:upper-content>
   <param:lower-nav>
     <li>
@@ -15,20 +14,28 @@
   </param:lower-nav>
   
   <param:lower-content>
-    <table>
+    <div style="float:right;margin-right:1em;">
+      <p tal:content="$status">Parameter will go here.</p>  
+    </div>
+    <table class="x10">
       <tbody>
 	<tr tal:dolist="$devices">
 	  <td tal:content="$name"></td>
-	  <td><a href="${$on-url}">ON</a></td>
-	  <td><a href="${$off-url}">OFF</a></td>
+	  <td><a href="${$on-url}" class="lcars-button lcars-tan">ON</a></td>
+	  <td><a href="${$off-url}" class="lcars-button lcars-lightRed">OFF</a></td>
 	</tr>
       </tbody>
     </table>
-    <hr/>
+    <div style="clear:both;"/>
     <p>
       <ol>
 	<li tal:dolist="$timers" tal:content="$name"></li>
       </ol>
     </p>
   </param:lower-content>
+  <param:startup-script>
+      $('table.x10 a').click(function(){
+        console.log($(this).attr('href'));     
+      });
+  </param:startup-script>
 </tal:include>

@@ -3,8 +3,9 @@
    tal:name="main.tal"
    xmlns:tal="http://common-lisp.net/project/bese/tal/core"
    xmlns:param="http://common-lisp.net/project/bese/tal/params">
+  <param:subtitle>Home</param:subtitle>
   <param:upper-content>
-    Home Summary
+    24<sup>th</sup> century home automation.
   </param:upper-content>
   <param:lower-content>
     uuhh.. stuff?

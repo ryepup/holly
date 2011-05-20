@@ -16,6 +16,12 @@
 		       :root-directories (list (resource-path "templates"))))
 
 (defun render-tal (tal-file &optional tal-env)
+;;  (push (cons 'utime (get-universal-time)) tal-env)
+  (push (list (cons 'utime (format nil "~,1F"
+			     (/ (get-universal-time) (* 24 3600.0))
+			     )))
+	
+	tal-env)
   (concatenate 'string
 	       "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
 "
