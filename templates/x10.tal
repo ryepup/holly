@@ -35,7 +35,7 @@
   </param:lower-content>
   <param:startup-script>
       $('table.x10 a').click(function(){
-        console.log($(this).attr('href'));     
+//        console.log($(this).attr('href'));     
       });
   </param:startup-script>
 </tal:include>
