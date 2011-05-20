@@ -82,4 +82,5 @@
   (setf *x10-timers* nil)
   (iter (for (timer lt) in (make-device-timers))
 	(trivial-timers:schedule-timer timer
-				       (local-time:timestamp-to-universal lt))))
+				       (local-time:timestamp-to-universal lt)
+				       :absolute-p T)))
