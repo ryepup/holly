@@ -23,7 +23,7 @@
       <tal:tal tal:content-as-is="$lower-content"/>
     </div>
     <script language="javascript" src="/assets/jquery.lcars/src/jquery.lcars.bootstrap.js"></script>
-    <script language="javascript">
+    <script language="javascript" tal:when="$startup-script">
       $(document).ready(function(){
       <tal:tal tal:content-as-is="$startup-script"/>
       });
