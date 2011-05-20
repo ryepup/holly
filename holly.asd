@@ -1,6 +1,6 @@
 (asdf:defsystem #:holly
   :depends-on (#:iterate #:hunchentoot #:trivial-shell #:chanl #:log5 #:yaclml
-			 #:drakma #:cxml #:local-time)
+			 #:drakma #:cxml #:local-time #:trivial-timers)
   :components ((:module "src"
 		:serial t
 		:components ((:file "packages")

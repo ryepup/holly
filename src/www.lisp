@@ -3,8 +3,7 @@
 (defun resource-path (dirname)
   (truename
    (merge-pathnames dirname
-		    (asdf:system-source-directory
-		     (make-keyword (package-name *package*))))))
+		    (asdf:system-source-directory :holly))))
 
 (defun entry-points ()
   (push (hunchentoot:create-folder-dispatcher-and-handler
