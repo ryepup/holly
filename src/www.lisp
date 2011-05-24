@@ -40,14 +40,16 @@
 		    (tal-env
 		     'name (x10-device-name dev)
 		     'class (x10-device-state dev)
-		     'on-url (x10-device-href (x10-device-code dev) T)
-		     'off-url (x10-device-href (x10-device-code dev) nil))))
+		     'next-time
+		     (when-let ((ts (first (last (find (x10-device-name dev) *x10-timers*
+					     :key #'(lambda (item) (x10-device-name (first item)))
+					     :test #'string=)))))
+		       (local-time:to-rfc1123-timestring ts))
+		     
+		     'code (x10-device-code dev))))
      'status (when-let ((code-dir (hunchentoot:session-value 'x10-switch)))
 	       (format nil "Set ~a to ~a" (car code-dir) (cadr code-dir)))
-     'reschedule-url "/x10-reschedule"
-     'timers (iter (for tm in *x10-timers*)
-		   (collect (tal-env 'name
-				     (trivial-timers:timer-name tm)))))))
+     'reschedule-url "/x10-reschedule")))
 
 (defun x10-device-href (code on-p)
   (format nil "/x10-switch?code=~a&dir=~a" code (if on-p "fon" "foff")))
@@ -57,6 +59,11 @@
   (change-x10-device code dir)
   (setf (hunchentoot:session-value 'x10-switch) (list code dir))
   (render-tal "x10-switch.tal"))
+
+(hunchentoot:define-easy-handler (api-x10 :uri "/api/x10")
+    (code dir)
+  (change-x10-device code dir)
+  "OK")
 
 (hunchentoot:define-easy-handler (x10-reschedule :uri "/x10-reschedule")
     ()

@@ -14,7 +14,7 @@
 			    (make-x10-device :name "Bedroom Lamp" :code "p1")))
 
 (defvar *x10-processor* nil "thread for serializing x10 req.")
-(defvar *x10-channel* (make-instance 'chanl:bounded-channel :size 5)
+(defvar *x10-channel* (make-instance 'chanl:bounded-channel :size 50)
   "channel to convey x10 commands, max queue length 5")
 (defvar *x10-timers* nil "list of active timers")
 
@@ -44,13 +44,13 @@
 		   (until (eql x :shutdown))
 		   (process-x10 x)))))
 
-(defgeneric change-x10-device (device direction))
-(defmethod change-x10-device (device (direction T))
-  (change-x10-device device (if direction "fon" "foff")))
-(defmethod change-x10-device ((dev x10-device) direction)
-  (change-x10-device (x10-device-code dev) direction))
-(defmethod change-x10-device ((code string) (direction string))
-  (chanl:send *x10-channel* (list code direction)))
+(defgeneric change-x10-device (device direction)
+  (:method (device (direction T))
+    (change-x10-device device (if direction "fon" "foff")))
+  (:method ((dev x10-device) direction)
+    (change-x10-device (x10-device-code dev) direction))
+  (:method ((code string) (direction string))
+    (chanl:send *x10-channel* (list code direction))))
 
 (defun make-x10-timer (dev on-p timestamp)
   (let ((timer
@@ -60,5 +60,5 @@
 					 (x10-device-name dev)
 					 (if on-p "on" "off")
 					 (local-time:to-rfc1123-timestring timestamp)))))
-    (push timer *x10-timers*)
+    (push (list dev timer timestamp) *x10-timers*)
     timer))
