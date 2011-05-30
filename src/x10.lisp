@@ -53,12 +53,20 @@
     (chanl:send *x10-channel* (list code direction))))
 
 (defun make-x10-timer (dev on-p timestamp)
-  (let ((timer
-	 (trivial-timers:make-timer #'(lambda ()
-			       (change-x10-device dev on-p))
-			   :name (format nil "Turn ~a ~a at ~a"
-					 (x10-device-name dev)
-					 (if on-p "on" "off")
-					 (local-time:to-rfc1123-timestring timestamp)))))
-    (push (list dev timer timestamp) *x10-timers*)
+  (let ((timer (make-instance 'x10-device-timer
+			      :device dev
+			      :timer (trivial-timers:make-timer
+				      #'(lambda () (change-x10-device dev on-p))
+				      :name (format nil "Turn ~a ~a at ~a"
+						    (x10-device-name dev)
+						    (if on-p "on" "off")
+						    (local-time:to-rfc1123-timestring timestamp)))
+			      :timestamp timestamp)))
+    (push timer *x10-timers*)
     timer))
+
+(defclass x10-device-timer ()
+  ((device :accessor device :initarg :device)
+   (timer :accessor timer :initarg :timer)
+   (timestamp :accessor timestamp :initarg :timestamp)))
+

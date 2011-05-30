@@ -41,10 +41,9 @@
 		     'name (x10-device-name dev)
 		     'class (x10-device-state dev)
 		     'next-time
-		     (when-let ((ts (first (last (find (x10-device-name dev) *x10-timers*
-					     :key #'(lambda (item) (x10-device-name (first item)))
-					     :test #'string=)))))
-		       (local-time:to-rfc1123-timestring ts))
+		     (when-let ((x10-timer (find dev *x10-timers*
+					  :key #'device)))
+		       (local-time:to-rfc1123-timestring (timestamp x10-timer)))
 		     
 		     'code (x10-device-code dev))))
      'status (when-let ((code-dir (hunchentoot:session-value 'x10-switch)))

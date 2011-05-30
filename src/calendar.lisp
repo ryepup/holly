@@ -26,8 +26,8 @@
     (when next-time
       ;;find the next on/off time for the device
       (destructuring-bind (start end) (first (times next-time))
-	(collect (list (make-x10-timer dev T start) start dev))
-	(collect (list (make-x10-timer dev nil end) end dev))))))
+	(collect (make-x10-timer dev T start))
+	(collect (make-x10-timer dev nil end))))))
 
 (defun calendar-url (&optional (base-url *google-calendar-url*))
   (format nil "~astart-min=~a&start-max=~a"
@@ -78,9 +78,10 @@
 
 ;;now to trigger and schedule the x10 commands
 (defun reschedule-timers ()
-  (mapcar #'trivial-timers:unschedule-timer *x10-timers*)
-  (setf *x10-timers* nil)
-  (iter (for (timer lt dev) in (make-device-timers))
-	(trivial-timers:schedule-timer timer
-				       (local-time:timestamp-to-universal lt)
+  (iter (for x10-timer = (pop *x10-timers*))
+	(while x10-timer)
+	(trivial-timers:unschedule-timer (timer x10-timer)))
+  (iter (for x10-timer in (make-device-timers))
+	(trivial-timers:schedule-timer (timer x10-timer)
+				       (local-time:timestamp-to-universal (timestamp x10-timer))
 				       :absolute-p T)))
