@@ -4,6 +4,9 @@
 				(read-line f))
   "the private URL from google calender, lets me bypass authorization")
 
+(defmacro cdrassoc (item alist)
+  `(cdr (assoc ,item ,alist)))
+
 (defclass calendar-entry ()
   ((title :accessor title :initarg :title)
    (times :accessor times :initarg :times :initform nil)))
@@ -29,52 +32,48 @@
 	(collect (make-x10-timer dev T start))
 	(collect (make-x10-timer dev nil end))))))
 
+;; need to be sure drakma knows how to convert this to a string
+(push (cons "application" "json") drakma:*text-content-types*)
+
 (defun calendar-url (&optional (base-url *google-calendar-url*))
-  (format nil "~astart-min=~a&start-max=~a"
+  (format nil "~a?start-min=~a&start-max=~a&alt=jsonc"
 	  base-url
-	  (local-time:to-rfc3339-timestring (local-time:now))
-	  (local-time:to-rfc3339-timestring
-	   (local-time:timestamp+ (local-time:now)
-								      1 :month))))
+	  (to-rfc3339-timestring (local-time:now))
+	  (to-rfc3339-timestring
+	   (local-time:timestamp+ (local-time:now) 1 :month))))
+
+(defun %get-calendar-data ()
+ (labels ((lookup (tree &rest keys)
+	    (if keys
+		(apply #'lookup
+		       (cdrassoc (first keys) tree)
+		       (rest keys))
+		tree)))
+   (iterate
+     (with json = (json:decode-json-from-string
+		   (drakma:http-request
+		    (calendar-url)
+		    :additional-headers '(("GData-Version" . "2")))))
+     (for entry in (lookup json :data :items))
+     (collect (list (cdrassoc :title entry)
+		    (cdrassoc :when entry))))))
 
 (defun get-calendar-entries ()
   "creates calendar-entry objects based on the xml returned by the calendar url"
   (iterate
-    (with xml = (cxml:make-source
-		 (drakma:http-request (calendar-url))))
-    (while (klacks:find-element xml "entry"))
-    (for title = (progn
-		   (klacks:find-element xml "title")
-		   (klacks:consume xml)
-		   (klacks:consume-characters xml)))
+    (for (title times) in (%get-calendar-data))
     (when (starts-with-subseq "x10" title)
       (collect
 	  (make-instance
 	   'calendar-entry
 	   :title title
-	   :times ;;find gp:when blocks
-	   (sort (iter (for next = (multiple-value-list (klacks:peek xml)))
-		       ;;stop search when we're peeking at the end of entry
-		       (until (and (eq (first next) :end-element)
-				   (string-equal (nth 2 next) "entry")))
-		       (when (and (eq (first next) :start-element)
-				  (string-equal (nth 2 next) "when"))
-			 (let ((start-end (list "-" "-")))
-			   (klacks:map-attributes
-			    #'(lambda (ns lname qname val default-p)
-				(declare (ignore ns qname default-p))
-				(when (string= lname "startTime")
-				  (setf (first start-end)
-					(local-time:parse-timestring val)))
-				(when (string= lname "endTime")
-				  (setf (second start-end)
-					(local-time:parse-timestring val))))
-			    xml)
-			   (when (local-time:timestamp> (first start-end) (local-time:now))
-			     (collect start-end))))
-		       (klacks:consume xml))
-		 #'local-time:timestamp<
-		 :key #'first))))))
+	   :times (sort (iter
+			  (for start-end in times)
+			  (collect (list
+				    (parse-timestring (cdrassoc :start start-end))
+				    (parse-timestring (cdrassoc :end start-end)))))
+			#'local-time:timestamp<
+			:key #'first))))))
 
 ;;now to trigger and schedule the x10 commands
 (defun reschedule-timers ()
