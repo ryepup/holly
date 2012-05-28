@@ -1,7 +1,7 @@
 (in-package :holly)
 
 (defun start-server (&key (port 8082))
-  (hunchentoot:start (make-instance 'hunchentoot:acceptor :port port))
+  (hunchentoot:start (make-instance 'hunchentoot:easy-acceptor :port port))
   (make-processor)
   (start-stream-sender 'all "/tmp/holly.log"
 		       :category-spec '(dribble+ x10)
