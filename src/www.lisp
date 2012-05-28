@@ -73,3 +73,9 @@
     ()
   (render-tal "home.tal"))
 
+
+(hunchentoot:define-easy-handler (home :uri "/api/quit")
+    ()
+  (chanl:send *quit-channel* 1)
+  "OK")
+
