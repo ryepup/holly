@@ -6,12 +6,12 @@
   (code "" :type string :read-only T )
   (state 0 :type bit))
 
-(defvar *x10-devices* (list (make-x10-device :name "TV Lamp" :code "a1")
-			    (make-x10-device :name "Bar Lights" :code "a3")
-			    (make-x10-device :name "Chandelier" :code "a5")
-			    (make-x10-device :name "Porch" :code "a2")
-			    (make-x10-device :name "Fish Tank" :code "p13")
-			    (make-x10-device :name "Bedroom Lamp" :code "p1")))
+(defvar *x10-devices*
+  (iter (for (name code) in '(("TV Lamp" "a1")
+			      ("Bar Lights" "a3")
+			      ("Chandalier" "a5")
+			      ("Porch" "a2")))
+	(collect (make-x10-device :name name :code code))))
 
 (defvar *x10-processor* nil "thread for serializing x10 req.")
 (defvar *x10-channel* (make-instance 'chanl:bounded-channel :size 50)
