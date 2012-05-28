@@ -78,7 +78,6 @@
   (chanl:send *quit-channel* 1)
   "OK")
 
-(hunchentoot:define-easy-handler (api-x10 :uri "/api/chores")
-    (code dir)
-  (change-x10-device code dir)
+(hunchentoot:define-easy-handler (api-chores :uri "/api/chores")
+    ()
   "OK")
