@@ -73,9 +73,12 @@
     ()
   (render-tal "home.tal"))
 
-
 (hunchentoot:define-easy-handler (home :uri "/api/quit")
     ()
   (chanl:send *quit-channel* 1)
   "OK")
 
+(hunchentoot:define-easy-handler (api-x10 :uri "/api/chores")
+    (code dir)
+  (change-x10-device code dir)
+  "OK")

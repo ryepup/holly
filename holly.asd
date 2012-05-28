@@ -5,6 +5,7 @@
 		:serial t
 		:components ((:file "packages")
 			     (:file "x10")
+			     (:file "chores")
 			     (:file "calendar")
 			     (:file "www")
 			     (:file "holly")))))
